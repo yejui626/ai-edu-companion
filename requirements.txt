@@ -1,0 +1,8 @@
+streamlit
+langchain-groq
+python-dotenv
+pdfplumber
+PyPDF2
+pymupdf
+deep_translator
+/.streamlit

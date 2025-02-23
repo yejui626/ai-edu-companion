@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Side by Side PDF Viewer</title>
+    <style>
+        .container {
+            display: flex;
+            gap: 20px;
+            height: 100vh;
+        }
+        
+        .pdf-container {
+            flex: 1;
+            height: 100%;
+        }
+        
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="pdf-container">
+            <iframe id="pdf1" src="example.pdf"></iframe>
+        </div>
+        <div class="pdf-container">
+            <iframe id="pdf2" src="example.pdf"></iframe>
+        </div>
+    </div>
+
+    <script>
+        const pdf1 = document.getElementById('pdf1');
+        const pdf2 = document.getElementById('pdf2');
+        
+        let isScrolling = false;
+
+        // Wait for iframes to load
+        pdf1.onload = setupScrollSync;
+        pdf2.onload = setupScrollSync;
+
+        function setupScrollSync() {
+            // Add scroll event listeners to the iframe contents
+            pdf1.contentWindow.addEventListener('scroll', function() {
+                if (!isScrolling) {
+                    isScrolling = true;
+                    const scrollPercentage = this.scrollY / (this.document.documentElement.scrollHeight - this.innerHeight);
+                    pdf2.contentWindow.scrollTo(0, scrollPercentage * (pdf2.contentWindow.document.documentElement.scrollHeight - pdf2.contentWindow.innerHeight));
+                    setTimeout(() => isScrolling = false, 50);
+                }
+            });
+
+            pdf2.contentWindow.addEventListener('scroll', function() {
+                if (!isScrolling) {
+                    isScrolling = true;
+                    const scrollPercentage = this.scrollY / (this.document.documentElement.scrollHeight - this.innerHeight);
+                    pdf1.contentWindow.scrollTo(0, scrollPercentage * (pdf1.contentWindow.document.documentElement.scrollHeight - pdf1.contentWindow.innerHeight));
+                    setTimeout(() => isScrolling = false, 50);
+                }
+            });
+        }
+    </script>
+</body>
+</html> 
